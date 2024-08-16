@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/color"
@@ -174,7 +175,9 @@ func logDetails(r *http.Request, response *detailLoggedResponseWriter, timer *ut
 	}
 
 	if isOkResponse(code) {
-		logger.Info(buf.String())
+		if bufStr := buf.String(); !strings.Contains(bufStr, "GET /ping") {
+			logger.Info(buf.String())
+		}
 	} else {
 		logger.Error(buf.String())
 	}

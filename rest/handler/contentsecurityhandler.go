@@ -41,7 +41,7 @@ func LimitContentSecurityHandler(limitBytes int64, decrypters map[string]codec.R
 					logc.Errorf(r.Context(), "Signature verification failed, X-Content-Security: %s",
 						r.Header.Get(contentSecurity))
 					executeCallbacks(w, r, next, strict, code, callbacks)
-				} else if r.ContentLength > 0 && header.Encrypted() {
+				} else if header.Encrypted() {
 					LimitCryptionHandler(limitBytes, header.Key)(next).ServeHTTP(w, r)
 				} else {
 					next.ServeHTTP(w, r)

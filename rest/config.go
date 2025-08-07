@@ -24,8 +24,10 @@ type (
 
 	// A PrivateKeyConf is a private key config.
 	PrivateKeyConf struct {
-		Fingerprint string
-		KeyFile     string
+		Fingerprint   string
+		KeyFile       string
+		SecretKeyFile string
+		SecretKey     string `json:",optional"`
 	}
 
 	// A SignatureConf is a signature config.

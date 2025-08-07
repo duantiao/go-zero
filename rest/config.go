@@ -26,7 +26,7 @@ type (
 	PrivateKeyConf struct {
 		Fingerprint   string
 		KeyFile       string
-		SecretKeyFile string
+		SecretKeyFile string `json:",optional"`
 		SecretKey     string `json:",optional"`
 	}
 

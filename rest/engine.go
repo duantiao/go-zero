@@ -201,10 +201,10 @@ func (ng *engine) createMetrics() *stat.Metrics {
 
 func (ng *engine) getLogHandler() func(http.Handler) http.Handler {
 	if ng.conf.Verbose {
-		return handler.DetailedLogHandler
+		return handler.DetailedLogHandler(handler.WithLogIgnorePaths(ng.conf.LogIgnorePaths))
 	}
 
-	return handler.LogHandler
+	return handler.LogHandler(handler.WithLogIgnorePaths(ng.conf.LogIgnorePaths))
 }
 
 func (ng *engine) getShedder(priority bool) load.Shedder {

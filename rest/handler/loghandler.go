@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/collection"
 	"io"
 	"net"
 	"net/http"
@@ -29,21 +30,45 @@ const (
 	defaultSlowThreshold   = time.Millisecond * 500
 )
 
+type (
+	// LogOption defines the method to customize an logOptions.
+	LogOption func(options *logOptions)
+
+	// logOptions is LogHandler options.
+	logOptions struct {
+		logIgnorePaths []string
+	}
+)
+
 var slowThreshold = syncx.ForAtomicDuration(defaultSlowThreshold)
 
 // LogHandler returns a middleware that logs http request and response.
-func LogHandler(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		timer := utils.NewElapsedTimer()
-		logs := new(internal.LogCollector)
-		lrw := response.NewWithCodeResponseWriter(w)
+func LogHandler(opts ...LogOption) func(http.Handler) http.Handler {
+	var options logOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
 
-		var dup io.ReadCloser
-		r.Body, dup = iox.LimitDupReadCloser(r.Body, limitBodyBytes)
-		next.ServeHTTP(lrw, r.WithContext(internal.WithLogCollector(r.Context(), logs)))
-		r.Body = dup
-		logBrief(r, lrw.Code, timer, logs)
-	})
+	ignorePaths := collection.NewSet[string]()
+	ignorePaths.Add(options.logIgnorePaths...)
+
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if ignorePaths.Contains(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			timer := utils.NewElapsedTimer()
+			logs := new(internal.LogCollector)
+			lrw := response.NewWithCodeResponseWriter(w)
+
+			var dup io.ReadCloser
+			r.Body, dup = iox.LimitDupReadCloser(r.Body, limitBodyBytes)
+			next.ServeHTTP(lrw, r.WithContext(internal.WithLogCollector(r.Context(), logs)))
+			r.Body = dup
+			logBrief(r, lrw.Code, timer, logs)
+		})
+	}
 }
 
 type detailLoggedResponseWriter struct {
@@ -87,21 +112,35 @@ func (w *detailLoggedResponseWriter) WriteHeader(code int) {
 }
 
 // DetailedLogHandler returns a middleware that logs http request and response in details.
-func DetailedLogHandler(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		timer := utils.NewElapsedTimer()
-		var buf bytes.Buffer
-		rw := response.NewWithCodeResponseWriter(w)
-		lrw := newDetailLoggedResponseWriter(rw, &buf)
+func DetailedLogHandler(opts ...LogOption) func(http.Handler) http.Handler {
+	var options logOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
 
-		var dup io.ReadCloser
-		// https://github.com/zeromicro/go-zero/issues/3564
-		r.Body, dup = iox.LimitDupReadCloser(r.Body, limitDetailedBodyBytes)
-		logs := new(internal.LogCollector)
-		next.ServeHTTP(lrw, r.WithContext(internal.WithLogCollector(r.Context(), logs)))
-		r.Body = dup
-		logDetails(r, lrw, timer, logs)
-	})
+	ignorePaths := collection.NewSet[string]()
+	ignorePaths.Add(options.logIgnorePaths...)
+
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if ignorePaths.Contains(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			timer := utils.NewElapsedTimer()
+			var buf bytes.Buffer
+			rw := response.NewWithCodeResponseWriter(w)
+			lrw := newDetailLoggedResponseWriter(rw, &buf)
+
+			var dup io.ReadCloser
+			// https://github.com/zeromicro/go-zero/issues/3564
+			r.Body, dup = iox.LimitDupReadCloser(r.Body, limitDetailedBodyBytes)
+			logs := new(internal.LogCollector)
+			next.ServeHTTP(lrw, r.WithContext(internal.WithLogCollector(r.Context(), logs)))
+			r.Body = dup
+			logDetails(r, lrw, timer, logs)
+		})
+	}
 }
 
 // SetSlowThreshold sets the slow threshold.
@@ -222,4 +261,11 @@ func wrapStatusCode(code int) string {
 	}
 
 	return logx.WithColorPadding(strconv.Itoa(code), colour)
+}
+
+// WithLogIgnorePaths specifies the logIgnorePaths option for LogHandler.
+func WithLogIgnorePaths(logIgnorePaths []string) LogOption {
+	return func(options *logOptions) {
+		options.logIgnorePaths = append(options.logIgnorePaths, logIgnorePaths...)
+	}
 }

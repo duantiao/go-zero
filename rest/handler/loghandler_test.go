@@ -17,8 +17,8 @@ import (
 
 func TestLogHandler(t *testing.T) {
 	handlers := []func(handler http.Handler) http.Handler{
-		LogHandler,
-		DetailedLogHandler,
+		LogHandler(),
+		DetailedLogHandler(),
 	}
 
 	for _, logHandler := range handlers {
@@ -50,7 +50,7 @@ func TestLogHandlerVeryLong(t *testing.T) {
 	}
 
 	req := httptest.NewRequest(http.MethodPost, "http://localhost", &buf)
-	handler := LogHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := LogHandler()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		internal.LogCollectorFromContext(r.Context()).Append("anything")
 		_, _ = io.Copy(io.Discard, r.Body)
 		w.Header().Set("X-Test", "test")
@@ -72,8 +72,8 @@ func TestLogHandlerVeryLong(t *testing.T) {
 
 func TestLogHandlerSlow(t *testing.T) {
 	handlers := []func(handler http.Handler) http.Handler{
-		LogHandler,
-		DetailedLogHandler,
+		LogHandler(),
+		DetailedLogHandler(),
 	}
 
 	for _, logHandler := range handlers {
@@ -97,7 +97,7 @@ func TestDetailedLogHandler_LargeBody(t *testing.T) {
 	}
 
 	req := httptest.NewRequest(http.MethodPost, "http://localhost", &buf)
-	h := DetailedLogHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	h := DetailedLogHandler()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		io.Copy(io.Discard, r.Body)
 	}))
 	resp := httptest.NewRecorder()
@@ -172,7 +172,7 @@ func BenchmarkLogHandler(b *testing.B) {
 	b.ReportAllocs()
 
 	req := httptest.NewRequest(http.MethodGet, "http://localhost", http.NoBody)
-	handler := LogHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := LogHandler()(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
 

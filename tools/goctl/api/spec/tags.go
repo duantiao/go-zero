@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/fatih/structtag"
+	"github.com/zeromicro/go-zero/tools/goctl/util/structtag"
 )
 
 var errTagNotExist = errors.New("tag does not exist")

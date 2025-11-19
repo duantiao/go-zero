@@ -24,7 +24,7 @@ func contextFromApi(info spec.Info) Context {
 	return Context{
 		UseDefinitions:            getBoolFromKVOrDefault(info.Properties, propertyKeyUseDefinitions, defaultValueOfPropertyUseDefinition),
 		WrapCodeMsg:               getBoolFromKVOrDefault(info.Properties, propertyKeyWrapCodeMsg, false),
-		BizCodeEnumDescription:    getStringFromKVOrDefault(info.Properties, propertyKeyBizCodeEnumDescription, "business code"),
+		BizCodeEnumDescription:    getStringFromKVOrDefault(info.Properties, propertyKeyBizCodeEnumDescription, "业务响应码"),
 		YAPIParametersWithExample: getBoolFromKVOrDefault(info.Properties, propertyKeyYAPIParametersWithExample, false),
 	}
 }

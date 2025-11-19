@@ -261,8 +261,10 @@ func wrapCodeMsgProps(ctx Context, properties spec.SchemaProps, atDoc apiSpec.At
 	}
 	globalCodeDesc := ctx.BizCodeEnumDescription
 	methodCodeDesc := getStringFromKVOrDefault(atDoc.Properties, propertyKeyBizCodeEnumDescription, globalCodeDesc)
+	properties.Description = "业务数据"
 	return spec.SchemaProps{
-		Type: []string{swaggerTypeObject},
+		Type:     []string{swaggerTypeObject},
+		Required: []string{"code", "msg", "data"},
 		Properties: spec.SchemaProperties{
 			"code": {
 				SwaggerSchemaProps: spec.SwaggerSchemaProps{
@@ -271,6 +273,7 @@ func wrapCodeMsgProps(ctx Context, properties spec.SchemaProps, atDoc apiSpec.At
 				SchemaProps: spec.SchemaProps{
 					Type:        []string{swaggerTypeInteger},
 					Description: methodCodeDesc,
+					Default:     0,
 				},
 			},
 			"msg": {
@@ -279,7 +282,8 @@ func wrapCodeMsgProps(ctx Context, properties spec.SchemaProps, atDoc apiSpec.At
 				},
 				SchemaProps: spec.SchemaProps{
 					Type:        []string{swaggerTypeString},
-					Description: "business message",
+					Description: "业务响应信息",
+					Default:     "ok",
 				},
 			},
 			"data": {

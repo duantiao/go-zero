@@ -7,9 +7,10 @@ import (
 )
 
 type Context struct {
-	UseDefinitions         bool
-	WrapCodeMsg            bool
-	BizCodeEnumDescription string
+	UseDefinitions            bool
+	WrapCodeMsg               bool
+	BizCodeEnumDescription    string
+	YAPIParametersWithExample bool
 }
 
 func testingContext(_ *testing.T) Context {
@@ -21,8 +22,9 @@ func contextFromApi(info spec.Info) Context {
 		return Context{}
 	}
 	return Context{
-		UseDefinitions:         getBoolFromKVOrDefault(info.Properties, propertyKeyUseDefinitions, defaultValueOfPropertyUseDefinition),
-		WrapCodeMsg:            getBoolFromKVOrDefault(info.Properties, propertyKeyWrapCodeMsg, false),
-		BizCodeEnumDescription: getStringFromKVOrDefault(info.Properties, propertyKeyBizCodeEnumDescription, "business code"),
+		UseDefinitions:            getBoolFromKVOrDefault(info.Properties, propertyKeyUseDefinitions, defaultValueOfPropertyUseDefinition),
+		WrapCodeMsg:               getBoolFromKVOrDefault(info.Properties, propertyKeyWrapCodeMsg, false),
+		BizCodeEnumDescription:    getStringFromKVOrDefault(info.Properties, propertyKeyBizCodeEnumDescription, "business code"),
+		YAPIParametersWithExample: getBoolFromKVOrDefault(info.Properties, propertyKeyYAPIParametersWithExample, false),
 	}
 }

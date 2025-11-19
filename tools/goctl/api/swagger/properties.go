@@ -21,6 +21,7 @@ func propertiesFromType(ctx Context, tp apiSpec.Type) (spec.SchemaProperties, []
 				jsonTagString                      = member.Name
 				minimum, maximum                   *float64
 				exclusiveMinimum, exclusiveMaximum bool
+				minLength, maxLength               *int64
 				example, defaultValue              any
 				enum                               []any
 			)
@@ -41,6 +42,7 @@ func propertiesFromType(ctx Context, tp apiSpec.Type) (spec.SchemaProperties, []
 			if jsonTag != nil {
 				jsonTagString = jsonTag.Name
 				minimum, maximum, exclusiveMinimum, exclusiveMaximum = rangeValueFromOptions(jsonTag.Options)
+				minLength, maxLength = lengthValueFromOptions(jsonTag.Options)
 				example = exampleValueFromOptions(ctx, jsonTag.Options, member.Type)
 				defaultValue = defValueFromOptions(ctx, jsonTag.Options, member.Type)
 				enum = enumsValueFromOptions(jsonTag.Options)
@@ -62,6 +64,8 @@ func propertiesFromType(ctx Context, tp apiSpec.Type) (spec.SchemaProperties, []
 					ExclusiveMaximum:     exclusiveMaximum,
 					Minimum:              minimum,
 					ExclusiveMinimum:     exclusiveMinimum,
+					MinLength:            minLength,
+					MaxLength:            maxLength,
 					Enum:                 enum,
 					AdditionalProperties: mapFromGoType(ctx, member.Type),
 				},

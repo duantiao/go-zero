@@ -95,6 +95,57 @@ func exampleValueFromOptions(ctx Context, options []string, apiType spec.Type) a
 	return defValueFromOptions(ctx, options, apiType)
 }
 
+func lengthValueFromOptions(options []string) (minimum *int64, maximum *int64) {
+	if len(options) == 0 {
+		return nil, nil
+	}
+	for _, option := range options {
+		if strings.HasPrefix(option, lengthFlag) {
+			val := option[7:]
+			start, end := val[0], val[len(val)-1]
+			if start != '[' {
+				return nil, nil
+			}
+			if end != ']' {
+				return nil, nil
+			}
+
+			content := val[1 : len(val)-1]
+			idxColon := strings.Index(content, ":")
+			if idxColon < 0 {
+				return nil, nil
+			}
+			var (
+				minStr, maxStr string
+				minVal, maxVal *int64
+			)
+			minStr = util.TrimWhiteSpace(content[:idxColon])
+			if len(val) >= idxColon+1 {
+				maxStr = util.TrimWhiteSpace(content[idxColon+1:])
+			}
+
+			if len(minStr) > 0 {
+				min, err := strconv.ParseInt(minStr, 10, 64)
+				if err != nil {
+					return nil, nil
+				}
+				minVal = &min
+			}
+
+			if len(maxStr) > 0 {
+				max, err := strconv.ParseInt(maxStr, 10, 64)
+				if err != nil {
+					return nil, nil
+				}
+				maxVal = &max
+			}
+
+			return minVal, maxVal
+		}
+	}
+	return nil, nil
+}
+
 func valueFromOptions(_ Context, options []string, key string, tp string) any {
 	if len(options) == 0 {
 		return nil

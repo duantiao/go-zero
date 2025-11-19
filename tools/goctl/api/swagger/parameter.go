@@ -61,12 +61,15 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 
 		if hasHeader {
 			minimum, maximum, exclusiveMinimum, exclusiveMaximum := rangeValueFromOptions(headerTag.Options)
+			minLength, maxLength := lengthValueFromOptions(headerTag.Options)
 			resp = append(resp, spec.Parameter{
 				CommonValidations: spec.CommonValidations{
 					Maximum:          maximum,
 					ExclusiveMaximum: exclusiveMaximum,
 					Minimum:          minimum,
 					ExclusiveMinimum: exclusiveMinimum,
+					MinLength:        minLength,
+					MaxLength:        maxLength,
 					Enum:             enumsValueFromOptions(headerTag.Options),
 				},
 				SimpleSchema: spec.SimpleSchema{
@@ -85,12 +88,15 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 
 		if hasPathParameter {
 			minimum, maximum, exclusiveMinimum, exclusiveMaximum := rangeValueFromOptions(pathParameterTag.Options)
+			minLength, maxLength := lengthValueFromOptions(pathParameterTag.Options)
 			resp = append(resp, spec.Parameter{
 				CommonValidations: spec.CommonValidations{
 					Maximum:          maximum,
 					ExclusiveMaximum: exclusiveMaximum,
 					Minimum:          minimum,
 					ExclusiveMinimum: exclusiveMinimum,
+					MinLength:        minLength,
+					MaxLength:        maxLength,
 					Enum:             enumsValueFromOptions(pathParameterTag.Options),
 				},
 				SimpleSchema: spec.SimpleSchema{
@@ -109,6 +115,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 
 		if hasForm {
 			minimum, maximum, exclusiveMinimum, exclusiveMaximum := rangeValueFromOptions(formTag.Options)
+			minLength, maxLength := lengthValueFromOptions(formTag.Options)
 			if strings.EqualFold(method, http.MethodGet) {
 				resp = append(resp, spec.Parameter{
 					CommonValidations: spec.CommonValidations{
@@ -116,6 +123,8 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 						ExclusiveMaximum: exclusiveMaximum,
 						Minimum:          minimum,
 						ExclusiveMinimum: exclusiveMinimum,
+						MinLength:        minLength,
+						MaxLength:        maxLength,
 						Enum:             enumsValueFromOptions(formTag.Options),
 					},
 					SimpleSchema: spec.SimpleSchema{
@@ -138,6 +147,8 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 						ExclusiveMaximum: exclusiveMaximum,
 						Minimum:          minimum,
 						ExclusiveMinimum: exclusiveMinimum,
+						MinLength:        minLength,
+						MaxLength:        maxLength,
 						Enum:             enumsValueFromOptions(formTag.Options),
 					},
 					SimpleSchema: spec.SimpleSchema{
@@ -158,6 +169,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 
 		if hasJson {
 			minimum, maximum, exclusiveMinimum, exclusiveMaximum := rangeValueFromOptions(jsonTag.Options)
+			minLength, maxLength := lengthValueFromOptions(jsonTag.Options)
 			if required {
 				requiredFields = append(requiredFields, jsonTag.Name)
 			}
@@ -173,6 +185,8 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 					ExclusiveMaximum:     exclusiveMaximum,
 					Minimum:              minimum,
 					ExclusiveMinimum:     exclusiveMinimum,
+					MinLength:            minLength,
+					MaxLength:            maxLength,
 					Enum:                 enumsValueFromOptions(jsonTag.Options),
 					AdditionalProperties: mapFromGoType(ctx, member.Type),
 				},

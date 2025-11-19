@@ -9,6 +9,7 @@ const (
 	enumFlag     = "options="
 	rangeFlag    = "range="
 	exampleFlag  = "example="
+	lengthFlag   = "length="
 	optionalFlag = "optional"
 
 	paramsInHeader = "header"

@@ -207,6 +207,54 @@ func TestExampleValueFromOptions(t *testing.T) {
 	}
 }
 
+func TestLengthValueFromOptions(t *testing.T) {
+	tests := []struct {
+		name        string
+		options     []string
+		expectedMin *int64
+		expectedMax *int64
+	}{
+		{
+			name:        "Valid length format",
+			options:     []string{"length=[1:10]"},
+			expectedMin: ptr(int64(1)),
+			expectedMax: ptr(int64(10)),
+		},
+		{
+			name:        "Invalid length format",
+			options:     []string{"length=(1:10)"},
+			expectedMin: nil,
+			expectedMax: nil,
+		},
+		{
+			name:        "Missing length end",
+			options:     []string{"length=[1:]"},
+			expectedMin: ptr(int64(1)),
+			expectedMax: nil,
+		},
+		{
+			name:        "Missing length start",
+			options:     []string{"length=[:10]"},
+			expectedMin: nil,
+			expectedMax: ptr(int64(10)),
+		},
+		{
+			name:        "Empty options",
+			options:     []string{},
+			expectedMin: nil,
+			expectedMax: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			min, max := lengthValueFromOptions(tt.options)
+			assert.Equal(t, tt.expectedMin, min)
+			assert.Equal(t, tt.expectedMax, max)
+		})
+	}
+}
+
 func TestValueFromOptions(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -255,4 +303,8 @@ func TestValueFromOptions(t *testing.T) {
 
 func floatPtr(f float64) *float64 {
 	return &f
+}
+
+func ptr[T any](v T) *T {
+	return &v
 }

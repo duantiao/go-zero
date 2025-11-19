@@ -80,7 +80,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 				ParamProps: spec.ParamProps{
 					In:          paramsInHeader,
 					Name:        headerTag.Name,
-					Description: formatComment(member.Comment),
+					Description: descriptionFromCommentAndOptions(ctx, member.Comment, headerTag.Options, member.Type),
 					Required:    required,
 				},
 			})
@@ -107,7 +107,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 				ParamProps: spec.ParamProps{
 					In:          paramsInPath,
 					Name:        pathParameterTag.Name,
-					Description: formatComment(member.Comment),
+					Description: descriptionFromCommentAndOptions(ctx, member.Comment, pathParameterTag.Options, member.Type),
 					Required:    required,
 				},
 			})
@@ -135,7 +135,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 					ParamProps: spec.ParamProps{
 						In:              paramsInQuery,
 						Name:            formTag.Name,
-						Description:     formatComment(member.Comment),
+						Description:     descriptionFromCommentAndOptions(ctx, member.Comment, formTag.Options, member.Type),
 						Required:        required,
 						AllowEmptyValue: !required,
 					},
@@ -159,7 +159,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 					ParamProps: spec.ParamProps{
 						In:              paramsInForm,
 						Name:            formTag.Name,
-						Description:     formatComment(member.Comment),
+						Description:     descriptionFromCommentAndOptions(ctx, member.Comment, formTag.Options, member.Type),
 						Required:        required,
 						AllowEmptyValue: !required,
 					},
@@ -178,7 +178,7 @@ func parametersFromType(ctx Context, method string, tp apiSpec.Type) []spec.Para
 					Example: exampleValueFromOptions(ctx, jsonTag.Options, member.Type),
 				},
 				SchemaProps: spec.SchemaProps{
-					Description:          formatComment(member.Comment),
+					Description:          descriptionFromCommentAndOptions(ctx, member.Comment, jsonTag.Options, member.Type),
 					Type:                 typeFromGoType(ctx, member.Type),
 					Default:              defValueFromOptions(ctx, jsonTag.Options, member.Type),
 					Maximum:              maximum,

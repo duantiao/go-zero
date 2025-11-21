@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zeromicro/go-zero/tools/goctl/api/parser/g4/gen/api"
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
-	"github.com/zeromicro/go-zero/tools/goctl/config"
-	"github.com/zeromicro/go-zero/tools/goctl/internal/version"
-	"github.com/zeromicro/go-zero/tools/goctl/util/format"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
-	"github.com/zeromicro/go-zero/tools/goctl/vars"
+	"github.com/duantiao/go-zero/tools/goctl/api/parser/g4/gen/api"
+	"github.com/duantiao/go-zero/tools/goctl/api/spec"
+	"github.com/duantiao/go-zero/tools/goctl/config"
+	"github.com/duantiao/go-zero/tools/goctl/internal/version"
+	"github.com/duantiao/go-zero/tools/goctl/util/format"
+	"github.com/duantiao/go-zero/tools/goctl/util/pathx"
+	"github.com/duantiao/go-zero/tools/goctl/vars"
 )
 
 var (

@@ -23,3 +23,12 @@ image:
 	docker tag kevinwan/goctl:$(version)-arm64 kevinwan/goctl:latest-arm64
 	docker push kevinwan/goctl:$(version)-arm64
 	docker push kevinwan/goctl:latest-arm64
+
+test-api:
+	goctl api format --dir ./example/
+	goctl api swagger --api ./example/api/service.api --dir ./example/ --filename service
+	#goctl api swagger --api ./example/api/service.api --dir ./example/ --filename service --yaml
+	#goctl api plugin -plugin goctl-swagger="swagger -filename service.json" -api ./example/api/service.api -dir ./example/
+	#redocly build-docs ./example/service.json --output=./example/service.html
+	#goctl api go --api ./example/api/service.api --dir ./example/api/build --style goZero
+

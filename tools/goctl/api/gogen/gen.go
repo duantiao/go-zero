@@ -11,16 +11,16 @@ import (
 	"sync"
 	"time"
 
+	apiformat "github.com/duantiao/go-zero/tools/goctl/api/format"
+	"github.com/duantiao/go-zero/tools/goctl/api/parser"
+	apiutil "github.com/duantiao/go-zero/tools/goctl/api/util"
+	"github.com/duantiao/go-zero/tools/goctl/config"
+	"github.com/duantiao/go-zero/tools/goctl/pkg/golang"
+	"github.com/duantiao/go-zero/tools/goctl/util"
+	"github.com/duantiao/go-zero/tools/goctl/util/pathx"
 	"github.com/gookit/color"
 	"github.com/spf13/cobra"
 	"github.com/zeromicro/go-zero/core/logx"
-	apiformat "github.com/zeromicro/go-zero/tools/goctl/api/format"
-	"github.com/zeromicro/go-zero/tools/goctl/api/parser"
-	apiutil "github.com/zeromicro/go-zero/tools/goctl/api/util"
-	"github.com/zeromicro/go-zero/tools/goctl/config"
-	"github.com/zeromicro/go-zero/tools/goctl/pkg/golang"
-	"github.com/zeromicro/go-zero/tools/goctl/util"
-	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
 const tmpFile = "%s-%d"

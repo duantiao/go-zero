@@ -7,9 +7,9 @@ import (
 	"slices"
 	"time"
 
-	"github.com/zeromicro/go-zero/tools/goctl/rpc/execx"
-	"github.com/zeromicro/go-zero/tools/goctl/util/console"
-	"github.com/zeromicro/go-zero/tools/goctl/util/ctx"
+	"github.com/duantiao/go-zero/tools/goctl/rpc/execx"
+	"github.com/duantiao/go-zero/tools/goctl/util/console"
+	"github.com/duantiao/go-zero/tools/goctl/util/ctx"
 )
 
 const (

@@ -2,7 +2,7 @@ package swagger
 
 import (
 	"fmt"
-	"github.com/zeromicro/go-zero/tools/goctl/api/spec"
+	"github.com/duantiao/go-zero/tools/goctl/api/spec"
 )
 
 func descriptionFromCommentAndOptions(ctx Context, comment string, options []string, apiType spec.Type) string {
